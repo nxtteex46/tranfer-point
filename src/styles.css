@@ -1,6 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap");
 
 :root {
+  --viewport-max: 440px;
+  --page-pad: 16px;
+  --content-width: calc(100vw - (var(--page-pad) * 2));
   --ink: #252525;
   --ink-strong: #111111;
   --muted: #6b6b6b;
@@ -22,6 +25,7 @@ html,
 body {
   margin: 0;
   padding: 0;
+  min-width: 320px;
 }
 
 body {
@@ -50,17 +54,17 @@ input {
 /* ---------- app shell ---------- */
 
 .app {
-  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   justify-content: center;
   background: #e9ecf0;
 }
 
 .app__viewport {
-  width: 440px;
+  width: min(100vw, var(--viewport-max));
   max-width: 100%;
   background: #fff;
-  min-height: 100vh;
+  min-height: 100svh;
   box-shadow: 0 0 60px rgba(0, 0, 0, 0.12);
 }
 
@@ -68,7 +72,7 @@ input {
   position: relative;
   width: 100%;
   background: #fff;
-  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
 }
@@ -220,7 +224,7 @@ input {
   position: absolute;
   left: 0;
   top: 0;
-  width: 440px;
+  width: 100%;
   height: 163px;
   background: linear-gradient(180deg, #ddecff 0%, #ffffff 100%);
 }
@@ -254,8 +258,8 @@ input {
   flex-direction: column;
   align-items: flex-start;
   gap: 24px;
-  padding: 16px 16px 24px;
-  width: 440px;
+  padding: 16px var(--page-pad) 24px;
+  width: 100%;
 }
 
 .tabs {
@@ -297,7 +301,7 @@ input {
 
 .banner {
   width: 100%;
-  height: 153px;
+  aspect-ratio: 408 / 153;
   border-radius: 10px;
   overflow: hidden;
   flex: none;
@@ -596,19 +600,13 @@ input {
 
 /* ---------- shared screen chrome ---------- */
 
-.screen--stack {
-  display: flex;
-  flex-direction: column;
-  min-height: 956px;
-}
-
 .screen__body {
   flex: 1 0 auto;
   display: flex;
   flex-direction: column;
   gap: 24px;
   align-items: flex-start;
-  padding: 24px 16px;
+  padding: 24px var(--page-pad);
 }
 
 .bottombar {
@@ -620,7 +618,7 @@ input {
   flex-direction: column;
   gap: 8px;
   align-items: stretch;
-  padding: 16px;
+  padding: 16px var(--page-pad);
   width: 100%;
   box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.08);
 }
@@ -657,11 +655,12 @@ input {
 
 .slip-stage {
   position: relative;
-  width: 408px;
-  height: 548px;
+  width: 100%;
+  max-width: 408px;
+  aspect-ratio: 408 / 548;
   border-radius: 20px;
   overflow: hidden;
-  padding: 32px;
+  padding: clamp(16px, 7.3vw, 32px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -681,9 +680,9 @@ input {
 .slip {
   position: relative;
   background: #fff;
-  width: 344px;
+  width: min(344px, 100%);
   border-radius: 20px;
-  padding: 24px 20px 20px;
+  padding: clamp(18px, 5.5vw, 24px) clamp(14px, 4.5vw, 20px) clamp(16px, 4.5vw, 20px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1009,7 +1008,7 @@ input {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding: 16px;
+  padding: 16px var(--page-pad);
   width: 100%;
 }
 
@@ -1075,7 +1074,7 @@ input {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding: 8px 16px 24px;
+  padding: 8px var(--page-pad) 24px;
   width: 100%;
   flex: 1 0 auto;
 }
@@ -1670,4 +1669,150 @@ input {
 
 .pin__key:disabled {
   opacity: 0.3;
+}
+
+@media (max-width: 440px) {
+  .app__viewport {
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 374px) {
+  :root {
+    --page-pad: 12px;
+  }
+
+  .topnav {
+    padding: 6px 12px;
+  }
+
+  .topnav--plain {
+    padding: 14px 12px;
+  }
+
+  .topnav__left {
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .topnav__title {
+    font-size: 16px;
+    line-height: 24px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .pillbtn {
+    padding: 11px 12px;
+  }
+
+  .tabs__item,
+  .segmented__tab {
+    padding-inline: 8px;
+  }
+
+  .partner-row {
+    gap: 12px;
+  }
+
+  .partner-row__logo {
+    width: 64px;
+    height: 64px;
+  }
+
+  .partner-row__rate {
+    font-size: 14px;
+  }
+
+  .promo-card__image {
+    width: 156px;
+    height: 156px;
+  }
+
+  .friends-section__head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .add-friend-btn {
+    align-self: flex-end;
+  }
+
+  .friend-row {
+    gap: 12px;
+  }
+
+  .friend-row__card {
+    font-size: 14px;
+  }
+
+  .slip-stage {
+    border-radius: 16px;
+  }
+
+  .slip {
+    border-radius: 16px;
+    gap: 12px;
+  }
+
+  .route__amount {
+    font-size: 24px;
+    line-height: 28px;
+  }
+
+  .account {
+    font-size: 12px;
+    white-space: normal;
+  }
+
+  .details {
+    font-size: 12px;
+  }
+
+  .party-chip {
+    padding-right: 8px;
+  }
+
+  .party-chip img {
+    width: 34px;
+    height: 34px;
+  }
+
+  .party-chip span {
+    font-size: 14px;
+  }
+
+  .amount__input,
+  .entry__input {
+    font-size: 30px;
+  }
+
+  .parties {
+    gap: 8px;
+    padding-inline: 0;
+  }
+
+  .parties__name {
+    font-size: 12px;
+  }
+
+  .pin {
+    padding-inline: 12px;
+  }
+
+  .pin__head {
+    gap: 40px;
+  }
+
+  .pin__sub {
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .pin__pad {
+    row-gap: 28px;
+    padding: 32px 16px 20px;
+  }
 }
