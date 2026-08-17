@@ -35,13 +35,21 @@ export default function AmountField({
   const display = isFilledLike(value) ? num.toLocaleString("en-US") : value;
   const isEmpty = !isFilledLike(value);
   const overMax = max != null && num > max;
+  const selectableTiers = tiers
+    ? tiers.filter((tier) => max == null || tier <= max)
+    : null;
+  const lastSelectableTier = selectableTiers?.[selectableTiers.length - 1] ?? null;
+  const atZero = num <= 0;
+  const atMax = tiers
+    ? lastSelectableTier != null && num >= lastSelectableTier
+    : max != null && num >= max;
 
   const state = overMax ? "error" : focused ? "focus" : isEmpty ? "default" : "filled";
   const showSteppers = focused || overMax;
 
   // ปัดเข้าอัตราที่ใกล้ที่สุด (เสมอกันให้ปัดขึ้น)
-  const snap = (n) =>
-    tiers.reduce((best, t) =>
+  const snap = (n, options = tiers) =>
+    options.reduce((best, t) =>
       Math.abs(t - n) < Math.abs(best - n) || (Math.abs(t - n) === Math.abs(best - n) && t > best)
         ? t
         : best
@@ -49,15 +57,22 @@ export default function AmountField({
 
   const setNum = (next) => {
     setBumped(false);
-    onChange(String(Math.max(0, next)));
+    const capped = max == null ? next : Math.min(next, max);
+    onChange(String(Math.max(0, capped)));
   };
 
   // −/+ เดินทีละขั้นของอัตรา ถ้าพาร์ตเนอร์คิดเป็นขั้น
   const stepBy = (dir) => {
     setBumped(false);
     if (tiers) {
-      const i = tiers.indexOf(num);
-      const next = i === -1 ? snap(num) : tiers[Math.min(Math.max(i + dir, 0), tiers.length - 1)];
+      const options = selectableTiers?.length ? selectableTiers : tiers;
+      const i = options.indexOf(num);
+      const next =
+        i === -1
+          ? dir > 0 && num <= 0
+            ? options[0]
+            : snap(num, options)
+          : options[Math.min(Math.max(i + dir, 0), options.length - 1)];
       onChange(String(next));
       return;
     }
@@ -68,7 +83,8 @@ export default function AmountField({
     setFocused(false);
     if (isEmpty) return;
     if (tiers) {
-      const snapped = snap(num);
+      const options = selectableTiers?.length ? selectableTiers : tiers;
+      const snapped = snap(num, options);
       if (snapped !== num) {
         onChange(String(snapped));
         setBumped(true);
@@ -120,6 +136,7 @@ export default function AmountField({
               className="stepper"
               type="button"
               aria-label="ลดจำนวน"
+              disabled={atZero}
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => stepBy(-1)}
             >
@@ -129,7 +146,7 @@ export default function AmountField({
               className="stepper"
               type="button"
               aria-label="เพิ่มจำนวน"
-              disabled={overMax || (tiers && num >= tiers[tiers.length - 1])}
+              disabled={overMax || atMax}
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => stepBy(1)}
             >
@@ -163,18 +180,23 @@ export default function AmountField({
 
       {quick.length > 0 && (
         <div className="quick">
-          {quick.map((q) => (
-            <button
-              key={q}
-              className="quick__chip"
-              type="button"
-              aria-pressed={num === q}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => setNum(q)}
-            >
-              {q.toLocaleString()}
-            </button>
-          ))}
+          {quick.map((q) => {
+            const disabled = max != null && q > max;
+
+            return (
+              <button
+                key={q}
+                className="quick__chip"
+                type="button"
+                aria-pressed={num === q}
+                disabled={disabled}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => setNum(q)}
+              >
+                {q.toLocaleString()}
+              </button>
+            );
+          })}
         </div>
       )}
     </div>

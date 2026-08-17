@@ -23,7 +23,7 @@ export default function PartnerAmount({ go, back, params }) {
   const min = minOf(partner);
   const [amount, setAmount] = useState(params.amount ?? "");
   const [note, setNote] = useState(params.note ?? "");
-  const [openTerms, setOpenTerms] = useState(false);
+  const [openTermsSheet, setOpenTermsSheet] = useState(false);
 
   const tiers = tierAmounts(partner);
   const received = receivedFor(partner, amount);
@@ -120,12 +120,12 @@ export default function PartnerAmount({ go, back, params }) {
 
         <div className="terms">
           <p className="terms__title">รายละเอียดและเงื่อนไข</p>
-          <div className={`terms__clip${openTerms ? " terms__clip--open" : ""}`}>
+          <div className="terms__clip">
             <p className="terms__body">{TERMS}</p>
-            {!openTerms && <div className="terms__fade" />}
+            <div className="terms__fade" />
           </div>
-          <button className="terms__more" type="button" onClick={() => setOpenTerms((v) => !v)}>
-            {openTerms ? "ย่อ" : "ดูทั้งหมด"}
+          <button className="terms__more" type="button" onClick={() => setOpenTermsSheet(true)}>
+            ดูทั้งหมด
           </button>
         </div>
       </div>
@@ -147,6 +147,32 @@ export default function PartnerAmount({ go, back, params }) {
           ถัดไป
         </button>
       </div>
+
+      {openTermsSheet && (
+        <div className="bottom-sheet-backdrop" role="presentation" onClick={() => setOpenTermsSheet(false)}>
+          <div
+            className="bottom-sheet"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="terms-sheet-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="bottom-sheet__handle" />
+            <div className="bottom-sheet__head">
+              <button
+                className="bottom-sheet__close"
+                type="button"
+                onClick={() => setOpenTermsSheet(false)}
+                aria-label="ปิด"
+              />
+              <h2 id="terms-sheet-title">รายละเอียดและเงื่อนไข</h2>
+            </div>
+            <div className="bottom-sheet__body">
+              <p className="terms__body">{TERMS}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1262,6 +1262,13 @@ input {
   color: #fff;
 }
 
+.quick__chip:disabled {
+  background: #f4f4f5;
+  border-color: #ececef;
+  color: #c2c2c6;
+  cursor: not-allowed;
+}
+
 .field {
   display: flex;
   flex-direction: column;
@@ -1303,10 +1310,6 @@ input {
   height: 66px;
 }
 
-.terms__clip--open {
-  height: auto;
-}
-
 .terms__body {
   font-size: 14px;
   color: var(--muted);
@@ -1325,14 +1328,101 @@ input {
 }
 
 .terms__more {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
+  align-self: center;
   padding-top: 4px;
   font-size: 14px;
   font-weight: 500;
   color: var(--ink);
-  width: 100%;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  width: auto;
+}
+
+.bottom-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.36);
+}
+
+.bottom-sheet {
+  width: min(100vw, var(--viewport-max));
+  max-height: min(76svh, 680px);
+  background: #fff;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  flex-direction: column;
+  padding: 10px var(--page-pad) 20px;
+  box-shadow: 0 -18px 42px rgba(0, 0, 0, 0.18);
+}
+
+.bottom-sheet__handle {
+  align-self: center;
+  width: 44px;
+  height: 4px;
+  border-radius: 999px;
+  background: #d9d9df;
+  margin: 2px 0 8px;
+  flex: none;
+}
+
+.bottom-sheet__head {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  flex: none;
+}
+
+.bottom-sheet__head h2 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.bottom-sheet__close {
+  position: relative;
+  align-self: flex-end;
+  width: 32px;
+  height: 32px;
+  flex: none;
+}
+
+.bottom-sheet__close::before,
+.bottom-sheet__close::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 16px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--ink);
+}
+
+.bottom-sheet__close::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.bottom-sheet__close::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.bottom-sheet__body {
+  overflow-y: auto;
+  padding-top: 12px;
+  scrollbar-width: none;
+}
+
+.bottom-sheet__body::-webkit-scrollbar {
+  display: none;
 }
 
 /* ---------- member amount screen ---------- */
