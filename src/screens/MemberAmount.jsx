@@ -41,6 +41,12 @@ function Side({ party }) {
 export default function MemberAmount({ go, back, params }) {
   const [amount, setAmount] = useState(params.amount ?? "");
   const [note, setNote] = useState(params.note ?? "");
+  const recipient = params.recipient
+    ? {
+        ...RECIPIENT,
+        ...params.recipient,
+      }
+    : RECIPIENT;
 
   return (
     <div className="screen">
@@ -75,7 +81,7 @@ export default function MemberAmount({ go, back, params }) {
         <div className="parties">
           <Side party={SENDER} />
           <img className="parties__arrow" src="/assets/arrow-right-14.svg" alt="ไปยัง" />
-          <Side party={RECIPIENT} />
+          <Side party={recipient} />
         </div>
 
         <AmountField
@@ -139,6 +145,7 @@ export default function MemberAmount({ go, back, params }) {
               kind: "member",
               amount: String(Math.max(Number(amount) || 0, MIN)),
               note,
+              recipient: params.recipient,
             })}
         >
           ยืนยัน

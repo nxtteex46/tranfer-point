@@ -20,8 +20,20 @@ export const TXN = {
  */
 export function slipFrom(params = {}) {
   if (params.kind === "member") {
+    const recipient = params.recipient;
     return {
       ...MEMBER_SLIP,
+      to: recipient?.initial
+        ? {
+            avatar: {
+              initial: recipient.initial,
+              bg: "#eadcfa",
+              fg: "#5b3b86",
+            },
+          }
+        : MEMBER_SLIP.to,
+      accountName: recipient?.name ?? MEMBER_SLIP.accountName,
+      accountId: recipient?.maskedCard ?? MEMBER_SLIP.accountId,
       amount: { value: Number(params.amount || 0).toLocaleString(), unit: "M Point" },
       note: params.note?.trim() ? params.note : MEMBER_SLIP.note,
     };

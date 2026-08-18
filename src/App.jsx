@@ -43,7 +43,10 @@ export default function App() {
     });
   }, []);
 
-  const home = useCallback(() => setStack([{ key: HOME, params: {} }]), []);
+  const home = useCallback((key = HOME, params = {}) => {
+    if (!SCREENS[key]) return;
+    setStack([{ key, params }]);
+  }, []);
 
   useEffect(() => {
     const onKey = (e) => {

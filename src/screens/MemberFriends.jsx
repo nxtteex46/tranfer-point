@@ -1,15 +1,44 @@
 import { useEffect, useState } from "react";
 import BackIcon from "../components/BackIcon";
 
-export default function MemberFriends({ go, back, params }) {
+const DEFAULT_MEMBER = {
+  alias: "เชอ",
+  name: "ปาณิศา ปัญจวรณ์",
+  card: "7102  3890  2475  9989",
+};
+
+export default function MemberFriends({ go, back, home, params }) {
   const [hasScrolled, setHasScrolled] = useState(false);
   const [activeTab, setActiveTab] = useState("friend");
+  const [isAliasSheetOpen, setIsAliasSheetOpen] = useState(false);
+  const [aliasName, setAliasName] = useState(params?.aliasName || "");
+  const [aliasDraft, setAliasDraft] = useState("");
   const hasMember = Boolean(params?.hasMember);
+  const member = params?.recipient
+    ? {
+        alias: aliasName || "ตั้งชื่อช่วยจำ",
+        name: params.recipient.name,
+        card: params.recipient.card?.replaceAll(" ", "  ") ?? DEFAULT_MEMBER.card,
+      }
+    : DEFAULT_MEMBER;
+
+  const openAliasSheet = (event) => {
+    event.stopPropagation();
+    setAliasDraft(aliasName);
+    setIsAliasSheetOpen(true);
+  };
+
+  const saveAlias = () => {
+    const nextAlias = aliasDraft.trim();
+    setIsAliasSheetOpen(false);
+    if (!nextAlias) return;
+    setAliasName(nextAlias);
+  };
 
   const openCardTab = () => {
     if (activeTab === "card") return;
     setActiveTab("card");
-    window.setTimeout(() => back(), 180);
+    window.setTimeout(() => home(), 180);
   };
 
   useEffect(() => {
@@ -75,15 +104,26 @@ export default function MemberFriends({ go, back, params }) {
           </div>
 
           {hasMember ? (
-            <button className="friend-row" type="button" onClick={() => go("member-amount")}>
+            <button
+              className="friend-row"
+              type="button"
+              onClick={() => go("member-amount", { recipient: params?.recipient })}
+            >
               <img className="friend-row__avatar" src="/assets/friend-panisa.png" alt="" />
               <span className="friend-row__body">
                 <span className="friend-row__alias">
-                  <span>เชอ</span>
-                  <img src="/assets/icon-edit.svg" alt="" />
+                  <span>{member.alias}</span>
+                  <button
+                    className="friend-row__edit"
+                    type="button"
+                    aria-label="ตั้งชื่อช่วยจำ"
+                    onClick={openAliasSheet}
+                  >
+                    <img src="/assets/icon-edit.svg" alt="" />
+                  </button>
                 </span>
-                <span className="friend-row__name">ปาณิศา ปัญจวรณ์</span>
-                <span className="friend-row__card">7102&nbsp;&nbsp;3890&nbsp;&nbsp;2475&nbsp;&nbsp;9989</span>
+                <span className="friend-row__name">{member.name}</span>
+                <span className="friend-row__card">{member.card}</span>
               </span>
               <img className="friend-row__arrow" src="/assets/icon-chevron.svg" alt="" />
             </button>
@@ -107,6 +147,54 @@ export default function MemberFriends({ go, back, params }) {
           )}
         </section>
       </div>
+
+      {isAliasSheetOpen && (
+        <div
+          className="bottom-sheet-backdrop"
+          role="presentation"
+          onClick={() => setIsAliasSheetOpen(false)}
+        >
+          <div
+            className="bottom-sheet alias-sheet"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="alias-sheet-title"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="bottom-sheet__handle" />
+            <div className="bottom-sheet__head">
+              <button
+                className="bottom-sheet__close"
+                type="button"
+                aria-label="ปิด"
+                onClick={() => setIsAliasSheetOpen(false)}
+              />
+              <h2 id="alias-sheet-title">ตั้งชื่อช่วยจำ</h2>
+            </div>
+            <div className="bottom-sheet__body alias-sheet__body">
+              <label className="alias-sheet__field">
+                <span>ชื่อช่วยจำ</span>
+                <input
+                  className="field__input"
+                  maxLength={20}
+                  value={aliasDraft}
+                  placeholder="ตั้งชื่อช่วยจำ"
+                  onChange={(event) => setAliasDraft(event.target.value)}
+                  autoFocus
+                />
+              </label>
+              <button
+                className="btn btn--primary"
+                type="button"
+                disabled={!aliasDraft.trim()}
+                onClick={saveAlias}
+              >
+                บันทึก
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

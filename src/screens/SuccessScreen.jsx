@@ -4,6 +4,16 @@ import { slipFrom, TXN } from "../data/flows";
 export default function SuccessScreen({ home, params }) {
   const slip = slipFrom(params);
   const art = params.theme ?? "/assets/slip-stage.png";
+  const isMember = params.kind === "member";
+
+  const closeSuccess = () => {
+    if (isMember) {
+      home("member-friends", { hasMember: true, recipient: params.recipient });
+      return;
+    }
+
+    home();
+  };
 
   return (
     <div className="screen">
@@ -43,7 +53,7 @@ export default function SuccessScreen({ home, params }) {
       </div>
 
       <div className="bottombar">
-        <button className="btn btn--primary" type="button" onClick={home}>
+        <button className="btn btn--primary" type="button" onClick={closeSuccess}>
           กลับหน้าหลัก
         </button>
       </div>

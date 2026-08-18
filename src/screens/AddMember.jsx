@@ -1,9 +1,26 @@
 import { useMemo, useState } from "react";
 import BackIcon from "../components/BackIcon";
 
+const SINGLE_RESULT = {
+  id: "9989",
+  name: "ณัฐี เกราะแก้ว",
+  card: "M Card  7102 •••• •••• 9989",
+  transferCard: "7102 3890 2475 9989",
+};
+
 const RESULTS = [
-  { id: "9989", name: "ปาณิศา ปัญจวรณ์", card: "M Card  7102 •••• •••• 9989" },
-  { id: "0071", name: "ปาณิศา ปัญจวรณ์", card: "M Card  7102 •••• •••• 0071" },
+  {
+    id: "9989",
+    name: "ปาณิศา ปัญจวรณ์",
+    card: "M Card  7102 •••• •••• 9989",
+    transferCard: "7102 3890 2475 9989",
+  },
+  {
+    id: "0071",
+    name: "ปาณิศา ปัญจวรณ์",
+    card: "M Card  7102 •••• •••• 0071",
+    transferCard: "7102 3890 2475 0071",
+  },
 ];
 
 const normalizeMemberQuery = (value) => value.replace(/\D/g, "");
@@ -63,21 +80,24 @@ export default function AddMember({ go, back }) {
   const canSearch = normalizedQuery.length === 10;
   const foundMembers = useMemo(() => {
     if (resultMode === "many") return RESULTS;
-    if (resultMode === "found") return [RESULTS[0]];
+    if (resultMode === "found") return [SINGLE_RESULT];
     return [];
   }, [resultMode]);
   const canAdd = foundMembers.length > 0 && selectedId;
+  const selectedMember = foundMembers.find((member) => member.id === selectedId);
 
   const searchMember = () => {
     if (!canSearch) return;
     if (normalizedQuery === "0948609935") {
       setResultMode("found");
+      setSelectedId(SINGLE_RESULT.id);
     } else if (normalizedQuery === "0932495247") {
       setResultMode("many");
+      setSelectedId(RESULTS[0].id);
     } else {
       setResultMode("not-found");
+      setSelectedId("");
     }
-    setSelectedId(RESULTS[0].id);
   };
 
   const showMany = () => {
@@ -89,7 +109,7 @@ export default function AddMember({ go, back }) {
   const showFound = () => {
     setQuery(formatPhoneQuery("0948609935"));
     setResultMode("found");
-    setSelectedId(RESULTS[0].id);
+    setSelectedId(SINGLE_RESULT.id);
   };
 
   return (
@@ -194,7 +214,18 @@ export default function AddMember({ go, back }) {
           className="btn btn--primary"
           type="button"
           disabled={!canAdd}
-          onClick={() => go("member-amount")}
+          onClick={() =>
+            go("member-amount", {
+              recipient: selectedMember
+                ? {
+                    initial: selectedMember.name.slice(0, 1),
+                    name: selectedMember.name,
+                    card: selectedMember.transferCard,
+                    maskedCard: selectedMember.card,
+                  }
+                : undefined,
+            })
+          }
         >
           เพิ่มสมาชิก
         </button>
