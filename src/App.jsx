@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import TransferPoint from "./screens/TransferPoint";
 import PartnerAmount from "./screens/PartnerAmount";
 import MemberFriends from "./screens/MemberFriends";
+import AddMember from "./screens/AddMember";
 import MemberAmount from "./screens/MemberAmount";
 import ConfirmScreen from "./screens/ConfirmScreen";
 import PinScreen from "./screens/PinScreen";
@@ -14,6 +15,7 @@ const SCREENS = {
   "partner-pin": PinScreen,
   "partner-success": SuccessScreen,
   "member-friends": MemberFriends,
+  "member-add": AddMember,
   "member-amount": MemberAmount,
   "member-confirm": ConfirmScreen,
   "member-pin": PinScreen,
