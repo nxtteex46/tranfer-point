@@ -11,6 +11,13 @@ const PROMOS = [
 
 export default function TransferPoint({ go }) {
   const [hasScrolled, setHasScrolled] = useState(false);
+  const [activeTab, setActiveTab] = useState("card");
+
+  const openFriendTab = () => {
+    if (activeTab === "friend") return;
+    setActiveTab("friend");
+    window.setTimeout(() => go("member-friends"), 180);
+  };
 
   useEffect(() => {
     const updateScrolled = () => setHasScrolled(window.scrollY > 0);
@@ -38,16 +45,16 @@ export default function TransferPoint({ go }) {
       </div>
 
       <div className="main-content">
-        <div className="tabs" role="tablist">
-          <button className="tabs__item" role="tab" aria-selected="true" type="button">
+        <div className={`tabs tabs--${activeTab}`} role="tablist">
+          <button className="tabs__item" role="tab" aria-selected={activeTab === "card"} type="button">
             โอนคะแนน จากบัตร
           </button>
           <button
             className="tabs__item"
             role="tab"
-            aria-selected="false"
+            aria-selected={activeTab === "friend"}
             type="button"
-            onClick={() => go("member-friends")}
+            onClick={openFriendTab}
           >
             โอนคะแนนให้เพื่อน
           </button>

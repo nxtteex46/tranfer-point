@@ -3,7 +3,14 @@ import BackIcon from "../components/BackIcon";
 
 export default function MemberFriends({ go, back, params }) {
   const [hasScrolled, setHasScrolled] = useState(false);
+  const [activeTab, setActiveTab] = useState("friend");
   const hasMember = Boolean(params?.hasMember);
+
+  const openCardTab = () => {
+    if (activeTab === "card") return;
+    setActiveTab("card");
+    window.setTimeout(() => back(), 180);
+  };
 
   useEffect(() => {
     const updateScrolled = () => setHasScrolled(window.scrollY > 0);
@@ -33,17 +40,17 @@ export default function MemberFriends({ go, back, params }) {
       </div>
 
       <div className="main-content member-friends">
-        <div className="tabs" role="tablist">
+        <div className={`tabs tabs--${activeTab}`} role="tablist">
           <button
             className="tabs__item"
             role="tab"
-            aria-selected="false"
+            aria-selected={activeTab === "card"}
             type="button"
-            onClick={back}
+            onClick={openCardTab}
           >
             โอนคะแนน จากบัตร
           </button>
-          <button className="tabs__item" role="tab" aria-selected="true" type="button">
+          <button className="tabs__item" role="tab" aria-selected={activeTab === "friend"} type="button">
             โอนคะแนนให้เพื่อน
           </button>
         </div>
